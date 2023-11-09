@@ -11,15 +11,15 @@ function App() {
 
   const addTodo = () => {
     let tempTodoList = [...todoList];
-    tempTodoList.push(newTodo);
+    tempTodoList.push({ id: Date.now(), name: newTodo });
     setTodoList(tempTodoList);
     setNewTodo('');
     localStorage.setItem('todo-list', JSON.stringify(tempTodoList));
   };
 
-  const removeTodo = (todo) => {
+  const removeTodo = (todoId) => {
     let tempTodoList = [...todoList];
-    tempTodoList = tempTodoList.filter((t) => t != todo);
+    tempTodoList = tempTodoList.filter((todo) => todo.id != todoId);
     setTodoList(tempTodoList);
     localStorage.setItem('todo-list', JSON.stringify(tempTodoList));
   };
@@ -61,14 +61,14 @@ function App() {
         )}
 
         <ul className="list-group" ref={animateList}>
-          {todoList.map((todo, i) => (
+          {todoList.map((todo) => (
             <li
-              key={i}
+              key={todo.id}
               className="list-group-item d-flex justify-content-between"
             >
-              {todo}
+              {todo.name}
               <i
-                onClick={() => removeTodo(todo)}
+                onClick={() => removeTodo(todo.id)}
                 className="ri-delete-bin-line text-danger"
                 style={{ cursor: 'pointer' }}
               ></i>
