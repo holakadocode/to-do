@@ -7,11 +7,13 @@ function App() {
   const [todoList, setTodoList] = useState(
     JSON.parse(localStorage.getItem('todo-list')) || []
   );
+  const [categories] = useState(['Compras', 'Recordatorios', 'Tareas']);
+  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
   const [newTodo, setNewTodo] = useState('');
 
   const addTodo = () => {
     let tempTodoList = [...todoList];
-    tempTodoList.push({ id: Date.now(), name: newTodo });
+    tempTodoList.push({ id: Date.now(), name: newTodo, category: selectedCategory });
     setTodoList(tempTodoList);
     setNewTodo('');
     localStorage.setItem('todo-list', JSON.stringify(tempTodoList));
@@ -46,6 +48,27 @@ function App() {
             onChange={(e) => setNewTodo(e.target.value)}
           />
           <button
+            className="btn btn-outline-secondary dropdown-toggle"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            {selectedCategory}
+          </button>
+          <ul className="dropdown-menu dropdown-menu-end">
+            {categories.map((category, i) => (
+              <li key={i}>
+                <a
+                  className="dropdown-item"
+                  onClick={() => setSelectedCategory(category)}
+                >
+                  {category}
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <button
             onClick={() => addTodo()}
             className="btn btn-outline-secondary"
             type="button"
@@ -53,7 +76,7 @@ function App() {
             <i className="ri-add-line"></i>
           </button>
         </div>
-        <h2>Listado de elementos</h2>
+        <h2>Listado de elementos [TODOS]</h2>
         {todoList.length === 0 && (
           <div className="alert alert-primary">
             Aún no tienes elementos en la lista.
@@ -67,11 +90,14 @@ function App() {
               className="list-group-item d-flex justify-content-between"
             >
               {todo.name}
-              <i
-                onClick={() => removeTodo(todo.id)}
-                className="ri-delete-bin-line text-danger"
-                style={{ cursor: 'pointer' }}
-              ></i>
+              <div>
+                <span>{todo.category}</span>
+                <i
+                  onClick={() => removeTodo(todo.id)}
+                  className="ri-delete-bin-line text-danger ms-4"
+                  style={{ cursor: 'pointer' }}
+                ></i>
+              </div>
             </li>
           ))}
         </ul>
